@@ -26,5 +26,5 @@ chai_recipe.update(extra_spices)
 
 print(f"Updated chai recipe: {chai_recipe}")
 
-customer_note = chai_order.get("size", "NO Note")
+customer_note = chai_order.get("size", "No size specified")
 print(f"customer_note is: {customer_note}")
