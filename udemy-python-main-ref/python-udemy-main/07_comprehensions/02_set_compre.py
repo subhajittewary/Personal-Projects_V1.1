@@ -13,6 +13,7 @@ recipes = {
     "Spicy Chai": ["ginger", "black pepper", "clove"],
 }
 
+# {expression for item in iterable if condition }
 unique_spices = {spice for ingredients in recipes.values() for spice in ingredients}
 
 print(unique_spices)
