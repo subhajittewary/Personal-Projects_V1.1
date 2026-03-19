@@ -12,3 +12,5 @@ def serve_chai(flavor):
 
 serve_chai("masala")
 serve_chai("unknown")
+
+#  try except else finally
