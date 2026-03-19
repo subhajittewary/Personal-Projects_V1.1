@@ -17,8 +17,7 @@ class ChaiShop:
         self.chai = self.chai_cls("Regular")
 
     def serve(self):
-        print(f"Serving {self.chai.type} chai in the shop")
-        self.chai.prepare()
+        print(f"Serving {self.chai.type}")
 
 class FancyChaiShop(ChaiShop):
     chai_cls = MasalaChai

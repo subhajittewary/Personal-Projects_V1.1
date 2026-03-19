@@ -1,10 +1,15 @@
 class ChaiUtils:
-    @staticmethod
-    def clean_ingredients(text):
-        return [item.strip() for item in text.split(",")]
-    
+    default_ingredients = "water, milk, ginger"
 
-raw = " water , milk , ginger , honey "
+    @classmethod
+    def clean_default(cls):
+        return [item.strip() for item in cls.default_ingredients.split(",")]
 
-cleaned = ChaiUtils.clean_ingredients(raw)
-print(cleaned)
+    def __init__(self, recipe):
+        self.recipe = recipe
+
+    def clean_recipe(self):
+        return [item.strip() for item in self.recipe.split(",")]
+default_ingredients = "water, milk, ginger  "
+ch = ChaiUtils(default_ingredients);
+print(ChaiUtils.clean_default());
