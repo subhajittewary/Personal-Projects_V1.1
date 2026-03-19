@@ -12,6 +12,7 @@ class ChaiOrder:
             order_data["size"],
         )
     
+ # helps in creating an instance by calling cls with desired input here cls means ChaiOrder
     @classmethod
     def from_string(cls, order_string):
         tea_type, sweetness, size = order_string.split("-")
@@ -31,6 +32,9 @@ order2 = ChaiOrder.from_string("Ginger-Low-Small")
 
 order3 = ChaiOrder("Large", "Low", "Large")
 
-print(order1.__dict__)
+order4 = ChaiOrder("masala Chai", "Low", "Large")
+
+print(order1.__dict__) # __dict__ stores instance specific field not the class/static methods.
 print(order2.__dict__)
 print(order3.__dict__)
+print(order4.__dict__)
