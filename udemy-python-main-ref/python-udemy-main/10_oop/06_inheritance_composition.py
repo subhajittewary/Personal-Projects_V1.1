@@ -7,6 +7,7 @@ class BaseChai:
 
 class MasalaChai(BaseChai):
     def add_spices(self):
+        self.prepare()
         print("Adding cardamom, ginger, cloves.")
 
 
