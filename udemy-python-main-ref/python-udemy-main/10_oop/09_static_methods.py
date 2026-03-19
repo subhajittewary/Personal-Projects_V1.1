@@ -13,3 +13,4 @@ class ChaiUtils:
 default_ingredients = "water, milk, ginger  "
 ch = ChaiUtils(default_ingredients);
 print(ChaiUtils.clean_default());
+print(ch.clean_recipe())
