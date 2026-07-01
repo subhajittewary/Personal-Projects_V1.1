@@ -2,3 +2,4 @@ node_modules/
 __pycache__/
 *.pyc
 .env
+python-udemy-hitesh/udemy-agentic-ai/weather_agent/.env
