@@ -3,12 +3,14 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import requests
 import json
-import os
+from pydantic import BaseModel, Field, ValidationError
+from typing import Optional
+from google.api_core import exceptions
 
 load_dotenv()
 
 genai.configure(
-    api_key="OPEN_AI_KEY")
+    api_key="AQ.Ab8RN6JulOxqdXPCbqEixIl0X5Y1inAig1UBFH2lLkOWr9ZK5A")
 client = genai.GenerativeModel("gemini-2.5-flash")
 
 
@@ -74,6 +76,13 @@ SYSTEM_PROMPT = """
 
 print("\n\n\n")
 
+class MyOutputFormat(BaseModel):
+    step: str = Field(..., description="The id of step. Example: PLAN, OUTPUT, TOOL etc.")
+    content: Optional[str] = Field(None, description="The optional string content for the step.")
+    tool: Optional[str] = Field(None, description="The id of the tool to call.")
+    input: Optional[str] = Field(None, description="The input params for the tool.")
+
+
 message_history = [
     {"role": "user", "parts": [SYSTEM_PROMPT]},
 ]
@@ -82,45 +91,54 @@ while True:
     message_history.append({"role": "user", "parts": [user_query]})
 
     while True:
-        response = client.generate_content(
-            contents=message_history,
-            generation_config={
-                "response_mime_type": "application/json",
-            }
-        )
+        try:
+            response = client.generate_content(
+                contents=message_history,
+                generation_config=genai.types.GenerationConfig(
+                    response_mime_type="application/json",
+                )
+            )
+        except exceptions.ResourceExhausted as exc:
+            print("⚠️ Gemini quota exceeded. Please wait a bit and try again later.")
+            print(exc)
+            break
 
         raw_result = response.text
         message_history.append({"role": "model", "parts": [raw_result]})
 
-        parsed_result = json.loads(raw_result)
-
-        if parsed_result.get("step") == "START":
-            print("🔥", parsed_result.get("content"))
+        try:
+            parsed_result = MyOutputFormat.model_validate_json(raw_result)
+        except ValidationError:
+            print("⚠️ The model response was not valid JSON. Trying once more...")
             continue
 
-        if parsed_result.get("step") == "TOOL":
-            tool = parsed_result.get("tool")
-            input = parsed_result.get("input")
-            print(f"⚙️: {tool} ({input})")
+        if parsed_result.step == "START":
+            print("🔥", parsed_result.content)
+            continue
 
-            tool_response = available_tools[tool](input)
-            print(f"⚙️: {tool}({input}) = {tool_response}")
+        if parsed_result.step == "TOOL":
+            tool = parsed_result.tool
+            input_value = parsed_result.input
+            print(f"⚙️: {tool} ({input_value})")
+
+            tool_response = available_tools[tool](input_value)
+            print(f"⚙️: {tool}({input_value}) = {tool_response}")
             message_history.append({"role": "user", "parts": [json.dumps(
                 {
                     "step": "OBSERVE",
                     "tool": tool,
-                    "input": input,
+                    "input": input_value,
                     "output": tool_response
                 }
             )]})
             continue
 
-        if parsed_result.get("step") == "PLAN":
-            print("🧠", parsed_result.get("content"))
+        if parsed_result.step == "PLAN":
+            print("🧠", parsed_result.content)
             continue
 
-        if parsed_result.get("step") == "OUTPUT":
-            print("🤖", parsed_result.get("content"))
+        if parsed_result.step == "OUTPUT":
+            print("🤖", parsed_result.content)
             break
 
     print("\n\n\n")
