@@ -10,7 +10,7 @@ from google.api_core import exceptions
 load_dotenv()
 
 genai.configure(
-    api_key="AQ.Ab8RN6JulOxqdXPCbqEixIl0X5Y1inAig1UBFH2lLkOWr9ZK5A")
+    api_key="PLACEHOLDER-KEY")
 client = genai.GenerativeModel("gemini-2.5-flash")
 
 
