@@ -76,11 +76,16 @@ SYSTEM_PROMPT = """
 
 print("\n\n\n")
 
+
 class MyOutputFormat(BaseModel):
-    step: str = Field(..., description="The id of step. Example: PLAN, OUTPUT, TOOL etc.")
-    content: Optional[str] = Field(None, description="The optional string content for the step.")
-    tool: Optional[str] = Field(None, description="The id of the tool to call.")
-    input: Optional[str] = Field(None, description="The input params for the tool.")
+    step: str = Field(...,
+                      description="The id of step. Example: PLAN, OUTPUT, TOOL etc.")
+    content: Optional[str] = Field(
+        None, description="The optional string content for the step.")
+    tool: Optional[str] = Field(
+        None, description="The id of the tool to call.")
+    input: Optional[str] = Field(
+        None, description="The input params for the tool.")
 
 
 message_history = [
