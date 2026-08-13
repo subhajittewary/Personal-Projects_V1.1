@@ -1,18 +1,35 @@
-from dotenv import load_dotenv
-from mem0 import Memory
-import os
-import json
 from openai import OpenAI
+import json
+from mem0 import Memory
+from dotenv import load_dotenv
+import os
+import certifi
+from pathlib import Path
 
-load_dotenv()
+# Configure TLS before importing Mem0, which imports the Neo4j driver.
+# The Python.org macOS installation may not have a system CA bundle configured.
+os.environ.setdefault("SSL_CERT_FILE", certifi.where())
+
+
+# Always load this script's .env file, even when the app is started from a
+# different working directory or stale Neo4j variables exist in the shell.
+load_dotenv(dotenv_path=Path(__file__).with_name(".env"), override=True)
 client = OpenAI()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+NEO_CONNECTION_URI = os.getenv("NEO_CONNECTION_URI")
+NEO_USERNAME = os.getenv("NEO_USERNAME")
+NEO_PASSWORD = os.getenv("NEO_PASSWORD")
 if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY is missing. Add it to your .env file.")
 
+if not all([NEO_CONNECTION_URI, NEO_USERNAME, NEO_PASSWORD]):
+    raise ValueError(
+        "Neo4j configuration is missing. Set NEO_CONNECTION_URI, NEO_USERNAME, "
+        "and NEO_PASSWORD in your .env file."
+    )
+
 config = {
-    "version": "v1.1",
     "embedder": {
         "provider": "openai",
         "config": {
@@ -25,6 +42,15 @@ config = {
         "config": {
                     "api_key": OPENAI_API_KEY,
                     "model": "gpt-4.1"
+        }
+    },
+    "graph_store": {
+        "provider": "neo4j",
+        "config": {
+            "url": NEO_CONNECTION_URI,
+            "username": NEO_USERNAME,
+            "password": NEO_PASSWORD,
+            "database": "c062c31b"
         }
     },
     "vector_store": {
@@ -44,10 +70,11 @@ while True:
         query=user_query, filters={"user_id": "subhajit"})
 
     memories = [
-        f"ID: {mem.get("id")}\nMemory: {mem.get("memory")}" for mem in search_memory.get("results")
+        f"ID: {mem.get('id')}\nMemory: {mem.get('memory')}"
+        for mem in search_memory.get("results", [])
     ]
 
-    print(f"found memories {memories}")
+    # print(f"found memories {memories}")
 
     SYSTEM_PROMPT = f"""
     Here is the context about the user:
@@ -66,7 +93,7 @@ while True:
 
     print("AI: ", ai_response)
 
-    mem_client.add(
+    save_result = mem_client.add(
         user_id="subhajit",
         messages=[
             {"role": "user", "content": user_query},
@@ -75,3 +102,4 @@ while True:
     )
 
     print("memory has been saved...")
+    print("Neo4j relations:", save_result.get("relations"))
