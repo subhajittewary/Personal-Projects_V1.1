@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://second-brain.dev/contracts/error-envelope/v1",
+  "title": "ErrorEnvelopeV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["code", "message", "trace_id"],
+  "properties": {
+    "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" },
+    "message": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "trace_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "field_errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "code"],
+        "properties": {
+          "field": { "type": "string" },
+          "code": { "type": "string" },
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}

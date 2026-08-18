@@ -1,0 +1,14 @@
+{
+  "name": "second-brain",
+  "private": true,
+  "packageManager": "npm@11.12.1",
+  "engines": { "node": ">=22.0.0", "npm": ">=10.0.0" },
+  "scripts": {
+    "build": "npm run build --workspace=@second-brain/shared && npm run build --workspace=@second-brain/web",
+    "lint": "npm run build --workspace=@second-brain/shared && npm run lint --workspace=@second-brain/shared && npm run lint --workspace=@second-brain/web && python3 -m compileall -q apps/api/src apps/worker/src packages/agent/src packages/rag/src packages/memory/src packages/graph/src packages/mcp/src",
+    "test": "npm run check:contracts && npm run test --workspace=@second-brain/shared && python3 scripts/check_python_packages.py",
+    "check:contracts": "node scripts/check-contracts.mjs",
+    "dev:web": "npm run dev --workspace=@second-brain/web"
+  },
+  "workspaces": ["apps/web", "packages/shared"]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://second-brain.dev/contracts/document/v1",
+  "title": "DocumentV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "owner_id", "name", "status", "created_at"],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "owner_id": { "type": "string", "format": "uuid" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "status": {
+      "type": "string",
+      "enum": [
+        "QUEUED",
+        "PROCESSING",
+        "READY",
+        "ERROR",
+        "DEAD_LETTER",
+        "DELETED"
+      ]
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "ingestion_version": { "type": "string" }
+  }
+}

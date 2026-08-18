@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://second-brain.dev/contracts/chat-event/v1",
+  "title": "ChatEventV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "conversation_id", "trace_id"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "token",
+        "citation",
+        "tool_status",
+        "confirmation_required",
+        "final",
+        "error"
+      ]
+    },
+    "conversation_id": { "type": "string", "format": "uuid" },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "data": { "type": "object" }
+  }
+}

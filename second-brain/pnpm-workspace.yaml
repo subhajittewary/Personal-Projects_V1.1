@@ -1,0 +1,2 @@
+# This file is retained only to make a future pnpm migration explicit.
+# npm workspaces are declared in the root package.json.
