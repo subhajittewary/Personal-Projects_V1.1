@@ -1,1 +1,5 @@
-"""HTTP boundary package; FastAPI implementation arrives in SB-3 and SB-6."""
+"""HTTP boundary primitives for the versioned Second Brain API."""
+
+from .versioning import API_PREFIX, API_VERSION, versioned_path
+
+__all__ = ["API_PREFIX", "API_VERSION", "versioned_path"]

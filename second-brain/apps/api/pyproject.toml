@@ -2,4 +2,4 @@
 name = "second-brain-api"
 version = "0.1.0"
 requires-python = ">=3.12"
-description = "FastAPI boundary for Second Brain (scaffold)."
+description = "Versioned HTTP boundary primitives for Second Brain."

@@ -6,9 +6,13 @@
   "scripts": {
     "build": "npm run build --workspace=@second-brain/shared && npm run build --workspace=@second-brain/web",
     "lint": "npm run build --workspace=@second-brain/shared && npm run lint --workspace=@second-brain/shared && npm run lint --workspace=@second-brain/web && python3 -m compileall -q apps/api/src apps/worker/src packages/agent/src packages/rag/src packages/memory/src packages/graph/src packages/mcp/src",
-    "test": "npm run check:contracts && npm run test --workspace=@second-brain/shared && python3 scripts/check_python_packages.py",
+    "test": "npm run check:contracts && npm run test --workspace=@second-brain/shared && python3 scripts/check_python_packages.py && python3 -m unittest discover -s apps/api/tests -p 'test_*.py'",
     "check:contracts": "node scripts/check-contracts.mjs",
-    "dev:web": "npm run dev --workspace=@second-brain/web"
+    "dev:web": "npm run dev --workspace=@second-brain/web",
+    "compose:config": "docker compose --env-file .env -f infra/compose/docker-compose.yml config",
+    "compose:up": "docker compose --env-file .env -f infra/compose/docker-compose.yml up --build -d",
+    "compose:down": "docker compose --env-file .env -f infra/compose/docker-compose.yml down",
+    "compose:smoke": "bash scripts/compose-smoke.sh"
   },
   "workspaces": ["apps/web", "packages/shared"]
 }
